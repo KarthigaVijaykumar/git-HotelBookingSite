@@ -13,11 +13,11 @@ pipeline{
             steps{
                 sg 'mvn test'
             }
-        }
-        post{
+            post{
             always{
                 junit 'target/surefire-reports/*.xml'
             }
+        }
         }
     }
 }
