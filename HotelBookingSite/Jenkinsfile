@@ -1,18 +1,22 @@
 pipeline{
-   agent{
-     docker{
-         image 'maven:3.6.3-jdk-11'
-         args '-v/root/.m2:/root/.m2'
-         }
-       }  
+    agent any
+    tools{
+        maven 'Maven'
+    }
     stages{
-        stage("Build & SonarQube Analysis"){
-            agent any
+        stage('Package'){
             steps{
-                withSonarQubeEnv('sonar-server'){
-                    bat 'java -version'
-                    bat 'mvn clean package sonar:sonar'
-                }
+                sh 'mvn B -DskipTests clean package'
+            }
+        }
+        stage('Test'){
+            steps{
+                sg 'mvn test'
+            }
+        }
+        post{
+            always{
+                junit 'target/surefire-reports/*.xml'
             }
         }
     }
